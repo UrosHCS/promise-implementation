@@ -19,7 +19,15 @@ class Prom {
 
   then(onFulfillment, onRejection) {
     if (this.state === "fulfilled") {
-      return Prom.resolve(onFulfillment(this.value));
+      try {
+        if (typeof onFulfillment === "function") {
+          return Prom.resolve(onFulfillment(this.value));
+        } else {
+          return Prom.resolve(this.value);
+        }
+      } catch (e) {
+        onRejection(e);
+      }
     }
 
     const promise = new Prom((resolve, reject) => {});
